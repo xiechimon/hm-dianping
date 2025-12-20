@@ -1,7 +1,9 @@
 package com.xmon.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.xmon.dto.Result;
 import com.xmon.entity.User;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * <p>
@@ -13,4 +15,5 @@ import com.xmon.entity.User;
  */
 public interface IUserService extends IService<User> {
 
+    Result sendCode(String phone, HttpSession session);
 }
