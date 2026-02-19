@@ -3,9 +3,12 @@ package com.xmon.controller;
 
 import com.xmon.dto.LoginFormDTO;
 import com.xmon.dto.Result;
+import com.xmon.dto.UserDTO;
+import com.xmon.entity.User;
 import com.xmon.entity.UserInfo;
 import com.xmon.service.IUserInfoService;
 import com.xmon.service.IUserService;
+import com.xmon.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,8 +68,9 @@ public class UserController {
 
     @GetMapping("/me")
     public Result me() {
-        // TODO 获取当前登录的用户并返回
-        return Result.fail("功能未完成");
+        // 获取当前登录的用户并返回
+        UserDTO user = UserHolder.getUser();
+        return Result.ok(user);
     }
 
     @GetMapping("/info/{id}")

@@ -1,9 +1,11 @@
 package com.xmon.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xmon.dto.LoginFormDTO;
 import com.xmon.dto.Result;
+import com.xmon.dto.UserDTO;
 import com.xmon.entity.User;
 import com.xmon.mapper.UserMapper;
 import com.xmon.service.IUserService;
@@ -72,7 +74,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
 
         // 7.（不存在和存在都要）保存用户信息到session
-        session.setAttribute("user", user);
+        session.setAttribute("user", BeanUtil.copyProperties(user, UserDTO.class));
         return Result.ok();
     }
 
