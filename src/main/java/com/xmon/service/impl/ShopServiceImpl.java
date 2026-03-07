@@ -39,10 +39,19 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
             Shop shop = JSONUtil.toBean(shopJson, Shop.class);
             return Result.ok(shop);
         }
+        // 判断命中的是否是空值
+        if (shopJson != null) {
+            return Result.fail("店铺信息不存在！");
+        }
+
+
         // 4. 不存在，根据 id 查询数据库
         Shop shop = getById(id);
         // 4.1 不存在，返回错误
         if (shop == null) {
+            // 将空值写入 Redis
+            stringRedisTemplate.opsForValue().set(key, "",RedisConstants.CACHE_NULL_TTL,TimeUnit.MINUTES);
+            // 返回错误信息
             return Result.fail("店铺不存在！");
         }
         // 4.2 存在，写入 Redis
