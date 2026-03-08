@@ -11,7 +11,6 @@ import com.xmon.service.IShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xmon.utils.RedisConstants;
 import com.xmon.utils.RedisData;
-import lombok.NonNull;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
