@@ -1,11 +1,8 @@
 package com.xmon.utils;
 
-import cn.hutool.core.lang.func.Func;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.xmon.entity.Shop;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -86,7 +83,7 @@ public class CacheClient {
 
         // 4. 命中，将 JSON 反序列化为对象后判断缓存是否过期
         RedisData redisData = JSONUtil.toBean(json, RedisData.class);
-        R r = JSONUtil.toBean((JSONObject) redisData.getData(), type);
+        R r = JSONUtil.toBean(JSONUtil.parseObj(redisData.getData()), type);
         LocalDateTime expireTime = redisData.getExpireTime();
 
         if (expireTime.isAfter(LocalDateTime.now())) {
