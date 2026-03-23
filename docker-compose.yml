@@ -1,0 +1,65 @@
+services:
+  # ─── MySQL ────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: hmdp-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 401025
+      MYSQL_DATABASE: hmdp
+      MYSQL_USER: hmdp
+      MYSQL_PASSWORD: 401025
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init-sql:/docker-entrypoint-initdb.d
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --sql-mode=''
+    networks:
+      - hmdp-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-u", "root", "-p401025"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Redis ────────────────────────────────────────────────
+  redis:
+    image: redis:7.0-alpine
+    container_name: hmdp-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - hmdp-net
+    command: redis-server --requirepass 401025
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "401025", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Nginx ────────────────────────────────────────────────
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: hmdp-nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/html:/usr/share/nginx/html:ro
+    networks:
+      - hmdp-net
+
+# ─── 持久化卷 ──────────────────────────────────────────────
+volumes:
+  mysql_data:
+  redis_data:
+
+# ─── 内部网络 ──────────────────────────────────────────────
+networks:
+  hmdp-net:
+    driver: bridge
